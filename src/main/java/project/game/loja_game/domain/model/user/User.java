@@ -13,7 +13,7 @@ public final class User{
     private final Address address;
     private final String phone;
     private final BirthData birthData;    
-    private final Set<User.Role> role = new HashSet<>();
+    private final Set<Role> roles = new HashSet<>();
 
     private User(final UserId id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData){
         this.id = id;
@@ -24,18 +24,18 @@ public final class User{
         this.phone = phone;
         this.birthData = birthData;
     }
-    public User createUser(final UserId id,final String name,final String email,final String password,final Address address,final String phone,final Date birthData){
+    public User createUser(UserId id, String name, String email, String password, Address address, String phone, Date birthData){
         if(!name.matches("^[\\w.-]{4,12}$")){
-            throw new IllegalArgumentException("Invalid name. The name must be at least 4 characters long and can only contain alphanumeric characters, dots (.), or hyphens (-).")
+            throw new InvalidUserException("USERNAME_ERROR", "Invalid name. The name must be at least 4 characters long and can only contain alphanumeric characters, dots (.), or hyphens (-).");
         }
         if(!email.matches("^[\\w.-]{1,64}@[\\w.-]{2,63}(\\.[A-Za-z]{2,10}){1,3}$")){
-            throw new IllegalArgumentException("Invalid email. Please enter a valid email address in the format name@domain.com. ")
+            throw new InvalidUserException("EMAIL_ERROR","Invalid email. Please enter a valid email address in the format name@domain.com. ");
         }
         if(!password.matches("^[\\w.-]{4,30}$")){
-            throw new IllegalArgumentException("Invalid password. The password must be longer than 4 characters and contain only letters, numbers, dots (.) or hyphens (-).")
-        }
-        if(!phone.matches("^\\+([\\d]{1,3})\s?([\\d]{1,4})\s?([\\d]{4,15})$")){
-            throw new IllegalArgumentException("Invalid phone number: The phone number must be in a valid format (e.g., +55 11 91234-5678). Please ensure it contains a valid country code and DDD.")
+            throw new InvalidUserException("PASSWORD_ERROR","Invalid password. The password must be longer than 4 characters and contain only letters, numbers, dots (.) or hyphens (-).");
+        }               
+        if(!phone.matches("^\\+([\\d]{1,3})\\s?([\\d]{1,4})\\s?([\\d]{4,15})$")){
+            throw new InvalidUserException("PHONE_ERROR","Invalid phone number: The phone number must be in a valid format (e.g., +55 11 91234-5678). Please ensure it contains a valid country code and DDD.");
         }
 
         return new User(id, name, email, password, address, phone, birthData);
@@ -69,8 +69,29 @@ public final class User{
         return birthData;
     }
 
-    public Set<Role> getRole() {
-        return role;
+    public Set<Role> getRoles() {
+        return new HashSet<>(roles);
+    }
+
+    public boolean addRole(Role role){
+        if (role == null) {
+            throw new InvalidRoleException("ROLE_NULL", "Role cannot be null");
+        }
+        if (roles.contains(role)) {
+            throw new RoleAlreadyExistsException("Role has already been added");
+        }
+    
+        return roles.add(role);
+    }
+
+    public boolean removeRole(Role role){
+        if (role == null) {
+            throw new InvalidRoleException("ROLE_NULL", "Role cannot be null");
+        }
+        if (!roles.contains(role)) {
+            throw new RoleNotFoundException("Role was not found and cannot be removed");
+        }
+        return roles.remove(role);
     }
 
     public enum Role {
@@ -88,7 +109,7 @@ public final class User{
         }
 
         public static Optional<Role> isValidRole(int role){
-        return Arrays.stream(values()).filter(x -> x.role == role).findFist();
+        return Arrays.stream(values()).filter(x -> x.role == role).findFirst();
         }      
     }
 }

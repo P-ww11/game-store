@@ -16,11 +16,14 @@ public final class BirthData{
 
     private void isValid(LocalDate birthData) {
         LocalDate dateNow = LocalDate.now();
+        if(birthData == null){
+            throw new InvalidBirthDateException("BIRTHDATE_NULL", "Birth date cannot be null.");
+        }
         if(birthData.isAfter(dateNow) || birthData.equals(dateNow)){
-            throw new IllegalArgumentException("the date of birth cannot be in the future or equal to the current date")
+            throw new InvalidBirthDataException("BIRTHDATE_IN_FUTURE","the date of birth cannot be in the future or equal to the current date");
         }
         if(Period.between(birthData, dateNow).getYears() <= 10){
-            throw new IllegalArgumentException("date of birth cannot be less than or equal to 10 years of age")
+            throw new InvalidBirthDataException("BIRTHDATE_TOO_YOUNG","date of birth cannot be less than or equal to 10 years of age");
         }
     }
 

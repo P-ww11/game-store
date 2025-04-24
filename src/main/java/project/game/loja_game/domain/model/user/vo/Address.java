@@ -17,24 +17,24 @@ public final class Address{
         this.streetNumber = streetNumber;
     }
     public static Address createAddress(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
-        if(country.length() < 3 || !country.matches("^[A-Za-zÀ-ÿ]+(\s[A-Za-zÀ-ÿ]+)*$")){
-             throw new IllegalArgumentException("Invalid country. It must have at least 3 characters and contain only letters and spaces.");
+        if(!country.matches("^[A-Za-zÀ-ÿ]{1,20}(\\s[A-Za-zÀ-ÿ]{1,20}){0,5}$")){
+             throw new InvalidAddressException("COUNTRY_NAME_ERROR","Invalid country. It must have at least 3 characters and contain only letters and spaces.");
         }
-        if(!region.matches("^[\\wÀ-ÿ.-]+(\s[\\wÀ-ÿ.-]+)*$") || region.length() < 1){
-           throw new IllegalArgumentException("Invalid region. Only alphanumeric characters, periods, and hyphens are allowed.");
+        if(!region.matches("^[\\wÀ-ÿ.-]{1,15}(\s[\\wÀ-ÿ.-]{1,15}){0,4}$")){
+           throw new InvalidAddressException("REGION_NAME_ERROR","Invalid region. Only alphanumeric characters, periods, and hyphens are allowed.");
         }
         if(!acronym.matches("^[A-Z]{2,6}$")){
-            throw new IllegalArgumentException("Invalid acronym. It must be between 2 and 6 uppercase characters.");
+            throw new InvalidAddressException("ERROR_IN_ACROYNM","Invalid acronym. It must be between 2 and 6 uppercase characters.");
            }
-        if(!city.matches("^[\\wÀ-ÿ.-]+(\s[\\wÀ-ÿ.-]+)*$")){
-            throw new IllegalArgumentException("Invalid city. Only alphanumeric characters, periods, and hyphens are allowed.");
+        if(!city.matches("^[\\wÀ-ÿ.-]{1,20}(\\s[\\wÀ-ÿ.-]{1,20}){0,5}$")){
+            throw new InvalidAddressException("CITY_NAME_ERROR","Invalid city. Only alphanumeric characters, periods, and hyphens are allowed.");
           }
-        if(!streetName.matches("^[\\wv.-]+(\s[\\wÀ-ÿ.-]+)*$")){
-            throw new IllegalArgumentException("Invalid street name. Only alphanumeric characters, periods, and hyphens are allowed.");
+        if(!streetName.matches("^[\\wv.-]{1,30}(\\s[\\wÀ-ÿ.-]{1,30}){0,5}$")){
+            throw new InvalidAddressException("STREET_NAME_ERROR","Invalid street name. Only alphanumeric characters, periods, and hyphens are allowed.");
         }
                                 
-        if(!streetNumber.matches("^\d{1,5}[A-Za-z]?\s?-?\s?\d{1,5}[A-Za-z]?(\/\d{1,5})?$")){
-            throw new IllegalArgumentException("Invalid street number. The number must follow the correct format, including numbers, letters, and fractions if applicable.");
+        if(!streetNumber.matches("^\\d{1,5}[A-Za-z]?\\s?-?\\s?\\d{1,5}[A-Za-z]?(\/\\d{1,5})?$")){
+            throw new InvalidAddressException("STREET_NUMBER_ERROR", "Invalid street number. The number must follow the correct format, including numbers, letters, and fractions if applicable.");
         }
 
        return new Address(country, region, acronym, city, streetName, streetNumber);

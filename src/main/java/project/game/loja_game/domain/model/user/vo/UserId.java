@@ -2,20 +2,24 @@ public class UserId{
 
     private UUID id;
 
-    private UserId(UUID id){
-        if(id == null){
-            throw new IllegalArgumentException("id null");
+    public  UserId(String id){
+        if(id == null || id.isBlank()){
+            throw new InvalidUserIdException("USER_ID_EMPTY", "User ID cannot be null or blank");
         }
-        this.id = id;
+        try{
+
+        this.id = UUID.fromString(id);
+
+        }
+        catch(IllegalArgumentException e){
+
+            throw new InvalidUserIdException("USER_ID_INVALID", "User ID must be a valid UUID");
+        }
     }
 
-    public static UserId createrRandom(){
-        return new UserId(UUID.randomUUID());
-    }
+   
 
-    public static UserId createFrom(UUID id){
-        return new UserId(id);
-    }
+    
     
     public UUID getId() {
         return id;
