@@ -1,0 +1,34 @@
+public final class BirthData{
+
+    private final LocalDate birthData;
+
+    private final DateTimeFormatter formatt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+
+    private BirthData(LocalDate birthData) {
+        isValid(birthData);
+        this.birthData = formbirthData;
+    }
+
+    public static BirthData of(LocalDate birthData) {
+        return new BirthData(birthData);
+    }
+
+    private void isValid(LocalDate birthData) {
+        LocalDate dateNow = LocalDate.now();
+        if(birthData.isAfter(dateNow) || birthData.equals(dateNow)){
+            throw new IllegalArgumentException("the date of birth cannot be in the future or equal to the current date")
+        }
+        if(Period.between(birthData, dateNow).getYears() <= 10){
+            throw new IllegalArgumentException("date of birth cannot be less than or equal to 10 years of age")
+        }
+    }
+
+    public LocalDate getBirthData() {
+        return birthData;
+    }
+    @Override
+    public Strint toString(){
+        return birthData.format(formatt);
+    }
+}
