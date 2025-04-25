@@ -24,7 +24,7 @@ public final class User{
         this.phone = phone;
         this.birthData = birthData;
     }
-    public User createUser(UserId id, String name, String email, String password, Address address, String phone, Date birthData){
+    public static User createUser(UserId id, String name, String email, String password, Address address, String phone, Date birthData, PasswordEncoder encoder){
         if(!name.matches("^[\\w.-]{4,12}$")){
             throw new InvalidUserException("USERNAME_ERROR", "Invalid name. The name must be at least 4 characters long and can only contain alphanumeric characters, dots (.), or hyphens (-).");
         }
@@ -38,7 +38,7 @@ public final class User{
             throw new InvalidUserException("PHONE_ERROR","Invalid phone number: The phone number must be in a valid format (e.g., +55 11 91234-5678). Please ensure it contains a valid country code and DDD.");
         }
 
-        return new User(id, name, email, password, address, phone, birthData);
+        return new User(id, name, email,encoder.encoder(password), address, phone, birthData);
     }
 
      public UserId getId() {
@@ -80,7 +80,9 @@ public final class User{
         if (roles.contains(role)) {
             throw new RoleAlreadyExistsException("Role has already been added");
         }
-    
+        if(Role.isValidRole(role.getRole()).ifPresent()){
+            
+        }
         return roles.add(role);
     }
 

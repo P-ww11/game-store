@@ -34,4 +34,16 @@ public final class BirthData{
     public Strint toString(){
         return birthData.format(formatt);
     }
+     @Override
+     public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof BirthData)) return false;
+        BirthData other = (BirthData) o;
+        return birthDate.equals(other.birthDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return birthData.hashCode();
+    }
 }

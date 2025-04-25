@@ -17,28 +17,28 @@ public final class Address{
         this.streetNumber = streetNumber;
     }
     public static Address createAddress(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
-        if(!country.matches("^[A-Za-zÀ-ÿ]{1,20}(\\s[A-Za-zÀ-ÿ]{1,20}){0,5}$")){
-             throw new InvalidAddressException("COUNTRY_NAME_ERROR","Invalid country. It must have at least 3 characters and contain only letters and spaces.");
+        if (country == null || country.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_COUNTRY_NAME", "Country cannot be null or empty");
         }
-        if(!region.matches("^[\\wÀ-ÿ.-]{1,15}(\s[\\wÀ-ÿ.-]{1,15}){0,4}$")){
-           throw new InvalidAddressException("REGION_NAME_ERROR","Invalid region. Only alphanumeric characters, periods, and hyphens are allowed.");
+        if (region == null || region.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_REGION_NAME", "Region cannot be null or empty");
         }
-        if(!acronym.matches("^[A-Z]{2,6}$")){
-            throw new InvalidAddressException("ERROR_IN_ACROYNM","Invalid acronym. It must be between 2 and 6 uppercase characters.");
-           }
-        if(!city.matches("^[\\wÀ-ÿ.-]{1,20}(\\s[\\wÀ-ÿ.-]{1,20}){0,5}$")){
-            throw new InvalidAddressException("CITY_NAME_ERROR","Invalid city. Only alphanumeric characters, periods, and hyphens are allowed.");
-          }
-        if(!streetName.matches("^[\\wv.-]{1,30}(\\s[\\wÀ-ÿ.-]{1,30}){0,5}$")){
-            throw new InvalidAddressException("STREET_NAME_ERROR","Invalid street name. Only alphanumeric characters, periods, and hyphens are allowed.");
+        if (acronym == null || acronym.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_ACRONYM_NAME", "Acronym cannot be null or empty");
         }
-                                
-        if(!streetNumber.matches("^\\d{1,5}[A-Za-z]?\\s?-?\\s?\\d{1,5}[A-Za-z]?(\/\\d{1,5})?$")){
-            throw new InvalidAddressException("STREET_NUMBER_ERROR", "Invalid street number. The number must follow the correct format, including numbers, letters, and fractions if applicable.");
+        if (city == null || city.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_CITY_NAME", "City cannot be null or empty");
+        }
+        if (streetName == null || streetName.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_STREET_NAME", "Street Name cannot be null or empty");
+        }
+        if (streetNumber == null || streetNumber.trim().isEmpty()) {
+            throw new InvalidAddressException("ERROR_STREET_NUMBER", "Street Number cannot be null or empty");
         }
 
        return new Address(country, region, acronym, city, streetName, streetNumber);
     }
+
     public String getCountry() {
         return country;
     }
@@ -58,6 +58,35 @@ public final class Address{
     public String getStreetNumber() {
         return streetNumber;
     }
-    
+
+     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address address = (Address) o;
+        return country.equals(address.country) &&
+               region.equals(address.region) &&
+               acronym.equals(address.acronym) &&
+               city.equals(address.city) &&
+               streetName.equals(address.streetName) &&
+               streetNumber.equals(address.streetNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(country, region, acronym, city, streetName, streetNumber);
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "country='" + country + '\'' +
+                ", region='" + region + '\'' +
+                ", acronym='" + acronym + '\'' +
+                ", city='" + city + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", streetNumber='" + streetNumber + '\'' +
+                '}';
+    }
 
 }
