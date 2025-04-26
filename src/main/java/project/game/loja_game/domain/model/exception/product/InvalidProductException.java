@@ -1,8 +1,8 @@
-public class InvalidUserIdException extends RuntimeException{
+public class InvalidProductException extends RuntimeException{
     private final String errorCode
 
     
-    public InvalidUserIdException(String errorCode, String message){
+    public InvalidProductException(String errorCode, String message){
         super(validateMessage(message));
         this.errorCode = validateErrorCode(errorCode);
     }

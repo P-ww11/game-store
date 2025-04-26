@@ -15,7 +15,7 @@ public final class User{
     private final BirthData birthData;    
     private final Set<Role> roles = new HashSet<>();
 
-    private User(final UUID id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData){
+    private User(final @NotNull UUID id,final @NotNull String name,final @NotNull String email,final String password,final Address address,final String phone,final BirthData birthData){
         this.id = id;
         this.name = name;
         this.email = email;
@@ -24,27 +24,27 @@ public final class User{
         this.phone = phone;
         this.birthData = birthData;
     }
-    public static User createUser(final String id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData,final PasswordEncoder encoder){
+    public static User of(final String id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData,final PasswordEncoder encoder){
         if (name == null || name.isBlank()) {
             throw new InvalidUserException("USERNAME_ERROR", "Name cannot be null or empty.");
         }
 
         if (email == null || email.isBlank()) {
-            throw new InvalidUserException("EMAIL_ERROR", "Email cannot be null or empty.");
+            throw new InvalidUserException("USER_EMAIL_ERROR", "Email cannot be null or empty.");
         }
 
         if (password == null || password.isBlank()) {
-            throw new InvalidUserException("PASSWORD_ERROR", "Password cannot be null or empty.");
+            throw new InvalidUserException("USER_PASSWORD_ERROR", "Password cannot be null or empty.");
         }
 
         if (phone == null || phone.isBlank()) {
-            throw new InvalidUserException("PHONE_ERROR", "Phone number cannot be null or empty.");
+            throw new InvalidUserException("USER_PHONE_ERROR", "Phone number cannot be null or empty.");
         }
         UUID newId;
         try {
             newId = (id == null || id.isBlank()) ? UUID.randomUUID() : UUID.fromString(id);
         } catch (IllegalArgumentException e) {
-            throw new InvalidUserException("ID_ERROR", "Provided ID is not a valid UUID.");
+            throw new InvalidUserException("USER_ID_ERROR", "Provided ID is not a valid UUID.");
         }
 
         return new User(newId, name, email,encoder.encoder(password), address, phone, birthData);

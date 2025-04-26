@@ -8,7 +8,7 @@ public final class Address{
     private final String streetName;
     private final String streetNumber;
 
-    private Address(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
+    private Address(final @NotNull String country,final @NotNull String region,final @NotNull String acronym,final @NotNull String city,final @NotNull String streetName,final @NotNull String streetNumber){
         this.country = country;
         this.region = region;
         this.acronym = acronym;
@@ -16,7 +16,7 @@ public final class Address{
         this.streetName = streetName;
         this.streetNumber = streetNumber;
     }
-    public static Address createAddress(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
+    public static Address of(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
         if (country == null || country.isBlank()) {
             throw new InvalidAddressException("ERROR_COUNTRY_NAME", "Country cannot be null or empty");
         }

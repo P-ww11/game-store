@@ -2,19 +2,19 @@ public final class BirthData{
 
     private final LocalDate birthData;
 
-    private final DateTimeFormatter formatt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
 
-    private BirthData(LocalDate birthData) {
-        isValid(birthData);
+    private BirthData(final @NotNull LocalDate birthData) {
         this.birthData = formbirthData;
     }
 
-    public static BirthData of(LocalDate birthData) {
+    public static BirthData of(final LocalDate birthData) {
+        isValid(birthData);
         return new BirthData(birthData);
     }
 
-    private void isValid(LocalDate birthData) {
+    private static void isValid(final LocalDate birthData) {
         LocalDate dateNow = LocalDate.now();
         if(birthData == null){
             throw new InvalidBirthDateException("BIRTHDATE_NULL", "Birth date cannot be null.");
@@ -31,15 +31,15 @@ public final class BirthData{
         return birthData;
     }
     @Override
-    public Strint toString(){
-        return birthData.format(formatt);
+    public String toString(){
+        return birthData.format(formatter);
     }
      @Override
      public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof BirthData)) return false;
         BirthData other = (BirthData) o;
-        return birthDate.equals(other.birthDate);
+        return birthDate.equals(other.getBirthDate());
     }
 
     @Override
