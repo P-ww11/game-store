@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public final class User{
 
-    private final UserId id;
+    private final UUID id;
     private final String name;
     private final String email;
     private final String password;
@@ -15,7 +15,7 @@ public final class User{
     private final BirthData birthData;    
     private final Set<Role> roles = new HashSet<>();
 
-    private User(final UserId id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData){
+    private User(final UUID id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData){
         this.id = id;
         this.name = name;
         this.email = email;
@@ -24,24 +24,33 @@ public final class User{
         this.phone = phone;
         this.birthData = birthData;
     }
-    public static User createUser(UserId id, String name, String email, String password, Address address, String phone, Date birthData, PasswordEncoder encoder){
-        if(!name.matches("^[\\w.-]{4,12}$")){
-            throw new InvalidUserException("USERNAME_ERROR", "Invalid name. The name must be at least 4 characters long and can only contain alphanumeric characters, dots (.), or hyphens (-).");
-        }
-        if(!email.matches("^[\\w.-]{1,64}@[\\w.-]{2,63}(\\.[A-Za-z]{2,10}){1,3}$")){
-            throw new InvalidUserException("EMAIL_ERROR","Invalid email. Please enter a valid email address in the format name@domain.com. ");
-        }
-        if(!password.matches("^[\\w.-]{4,30}$")){
-            throw new InvalidUserException("PASSWORD_ERROR","Invalid password. The password must be longer than 4 characters and contain only letters, numbers, dots (.) or hyphens (-).");
-        }               
-        if(!phone.matches("^\\+([\\d]{1,3})\\s?([\\d]{1,4})\\s?([\\d]{4,15})$")){
-            throw new InvalidUserException("PHONE_ERROR","Invalid phone number: The phone number must be in a valid format (e.g., +55 11 91234-5678). Please ensure it contains a valid country code and DDD.");
+    public static User createUser(final String id,final String name,final String email,final String password,final Address address,final String phone,final BirthData birthData,final PasswordEncoder encoder){
+        if (name == null || name.isBlank()) {
+            throw new InvalidUserException("USERNAME_ERROR", "Name cannot be null or empty.");
         }
 
-        return new User(id, name, email,encoder.encoder(password), address, phone, birthData);
+        if (email == null || email.isBlank()) {
+            throw new InvalidUserException("EMAIL_ERROR", "Email cannot be null or empty.");
+        }
+
+        if (password == null || password.isBlank()) {
+            throw new InvalidUserException("PASSWORD_ERROR", "Password cannot be null or empty.");
+        }
+
+        if (phone == null || phone.isBlank()) {
+            throw new InvalidUserException("PHONE_ERROR", "Phone number cannot be null or empty.");
+        }
+        UUID newId;
+        try {
+            newId = (id == null || id.isBlank()) ? UUID.randomUUID() : UUID.fromString(id);
+        } catch (IllegalArgumentException e) {
+            throw new InvalidUserException("ID_ERROR", "Provided ID is not a valid UUID.");
+        }
+
+        return new User(newId, name, email,encoder.encoder(password), address, phone, birthData);
     }
 
-     public UserId getId() {
+     public UUID getId() {
         return id;
     }
 
@@ -65,7 +74,7 @@ public final class User{
         return phone;
     }
 
-    public  LocalDate getBirthData() {
+    public  BirthData getBirthData() {
         return birthData;
     }
 
@@ -80,8 +89,8 @@ public final class User{
         if (roles.contains(role)) {
             throw new RoleAlreadyExistsException("Role has already been added");
         }
-        if(Role.isValidRole(role.getRole()).ifPresent()){
-            
+        if(!Role.isValidRole(role.getRole()).isPresent()){
+            throw new RoleNotFoundException("role was not found"); 
         }
         return roles.add(role);
     }
@@ -90,7 +99,7 @@ public final class User{
         if (role == null) {
             throw new InvalidRoleException("ROLE_NULL", "Role cannot be null");
         }
-        if (!roles.contains(role)) {
+        if (!roles.contains(role) || !Role.isValidRole(role.getRole()).isPresent()) {
             throw new RoleNotFoundException("Role was not found and cannot be removed");
         }
         return roles.remove(role);

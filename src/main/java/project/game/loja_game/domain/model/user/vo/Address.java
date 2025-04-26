@@ -17,22 +17,22 @@ public final class Address{
         this.streetNumber = streetNumber;
     }
     public static Address createAddress(final String country,final String region,final String acronym,final String city,final String streetName,final String streetNumber){
-        if (country == null || country.trim().isEmpty()) {
+        if (country == null || country.isBlank()) {
             throw new InvalidAddressException("ERROR_COUNTRY_NAME", "Country cannot be null or empty");
         }
-        if (region == null || region.trim().isEmpty()) {
+        if (region == null || region.isBlank()) {
             throw new InvalidAddressException("ERROR_REGION_NAME", "Region cannot be null or empty");
         }
-        if (acronym == null || acronym.trim().isEmpty()) {
+        if (acronym == null || acronym.isBlank()) {
             throw new InvalidAddressException("ERROR_ACRONYM_NAME", "Acronym cannot be null or empty");
         }
-        if (city == null || city.trim().isEmpty()) {
+        if (city == null || city.trim().isBlank()) {
             throw new InvalidAddressException("ERROR_CITY_NAME", "City cannot be null or empty");
         }
-        if (streetName == null || streetName.trim().isEmpty()) {
+        if (streetName == null || streetName.isBlank()) {
             throw new InvalidAddressException("ERROR_STREET_NAME", "Street Name cannot be null or empty");
         }
-        if (streetNumber == null || streetNumber.trim().isEmpty()) {
+        if (streetNumber == null || streetNumber.isBlank()) {
             throw new InvalidAddressException("ERROR_STREET_NUMBER", "Street Number cannot be null or empty");
         }
 
